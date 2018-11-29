@@ -6,13 +6,11 @@
 
 #include <GL/glut.h>
 
-extern GLuint bg_tex_name;
-
 //Drawing background
 void draw_background();
 
-//Drawing poles
-void draw_poles();
+//Drawing towers
+void draw_towers();
 
 //Drawing disks
 void draw_disks();

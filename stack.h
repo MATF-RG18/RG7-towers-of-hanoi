@@ -4,35 +4,35 @@
 #include <stdio.h>
 #include <GL/glut.h>
 
-#define POLE_DISTANCE 2.5
-#define POLE_RADIUS 0.1
+#define TOWER_DISTANCE 2.5
+#define TOWER_RADIUS 0.1
 #define DISK_RADIUS 0.15
 #define DISK_HEIGHT 0.27
-#define MAX_SIZE 100
+#define MAX_DISK_NUM 10
 
 int NO_OF_DISKS;
-float POLE_HEIGHT;
+float TOWER_HEIGHT;
 
-//Structure that keeps informations for each pole
+//Structure that keeps informations for each tower
 typedef struct _stack {
     int top;					//number of disks
-    float size[MAX_SIZE];		//size of each disk
-    float pole_pos_x;			//pole position along the X axis
-    float disk_pos_y[MAX_SIZE];	//position of each disk along the Y axis
-    char id;                    //id of the pole
+    float size[MAX_DISK_NUM];		//size of each disk
+    float tower_pos_x;			//tower position along the X axis
+    float disk_pos_y[MAX_DISK_NUM];	//position of each disk along the Y axis
+    char id;                    //id of the tower
 } Stack;
 
-//Poles A, B and C
+//Towers A, B and C
 Stack A;
 Stack B;
 Stack C;
 
-//Pointers to the poles used in a disk movement
+//Pointers to the towers used in a disk movement
 Stack *src;
 Stack *dest;
 
 //Stacks initialization
-void initializeStack();
+void initialize_stack();
 
 //Pop disk
 float pop(Stack *p);

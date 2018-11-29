@@ -24,17 +24,16 @@ void draw_background() {
     glEnd();
     glPopMatrix();
 
-
     glBindTexture(GL_TEXTURE_2D, 0);
 
 }
 
-void draw_poles() {
+void draw_towers() {
 
-    set_material('p');
+    set_material('t');
 	GLUquadricObj *obj = gluNewQuadric();
 
-	//Drawing plarform for poles
+	//Drawing plarform for towers
 	glTranslatef(0, -1, 0);
 
 	glPushMatrix();
@@ -86,29 +85,29 @@ void draw_poles() {
 	glPopMatrix();
 
 
-	//Drawing poles
+	//Drawing towers
 	glColor3f (0, 0.7, 0.5);
 	glPushMatrix();
 
-		//First pole
-		glTranslatef(-POLE_DISTANCE, 0, 0);
+		//First tower
+		glTranslatef(-TOWER_DISTANCE, 0, 0);
 		glPushMatrix();
 			glRotatef(-90,1,0,0);
-			gluCylinder(obj, POLE_RADIUS, POLE_RADIUS, POLE_HEIGHT, 20, 1);
+			gluCylinder(obj, TOWER_RADIUS, TOWER_RADIUS, TOWER_HEIGHT, 20, 1);
 		glPopMatrix();
 
-		//Second pole
-		glTranslatef(POLE_DISTANCE,0,0);
+		//Second tower
+		glTranslatef(TOWER_DISTANCE,0,0);
 		glPushMatrix();
 			glRotatef(-90,1,0,0);
-			gluCylinder(obj, POLE_RADIUS, POLE_RADIUS, POLE_HEIGHT, 20, 1);
+			gluCylinder(obj, TOWER_RADIUS, TOWER_RADIUS, TOWER_HEIGHT, 20, 1);
 		glPopMatrix();
 
-		//Third pole
-		glTranslatef(POLE_DISTANCE,0,0);
+		//Third tower
+		glTranslatef(TOWER_DISTANCE,0,0);
 		glPushMatrix();
 			glRotatef(-90,1,0,0);
-			gluCylinder(obj, POLE_RADIUS, POLE_RADIUS, POLE_HEIGHT, 20, 1);
+			gluCylinder(obj, TOWER_RADIUS, TOWER_RADIUS, TOWER_HEIGHT, 20, 1);
 		glPopMatrix();
 	glPopMatrix();
 }
@@ -118,39 +117,39 @@ void draw_disks() {
     set_material('d');
 
 	glPushMatrix();
-		//Disks on the first pole
+		//Disks on the first tower
 		for(int i=0; i<A.top; i++) {
 			glPushMatrix();
 				if(src == &A && i == A.top - 1)
-					glTranslatef(A.pole_pos_x + add_xpos, A.disk_pos_y[i], 0);
+					glTranslatef(A.tower_pos_x + add_xpos, A.disk_pos_y[i], 0);
 				else
-					glTranslatef(A.pole_pos_x, A.disk_pos_y[i], 0);
+					glTranslatef(A.tower_pos_x, A.disk_pos_y[i], 0);
 				glRotatef(90, 1, 0, 0);
 				glColor3f(1, 1, 1);
 				glutSolidTorus(DISK_RADIUS, A.size[i], 20, 20);
 			glPopMatrix();
 		}
 
-		//Disks on the second pole
+		//Disks on the second tower
 		for(int i=0; i<B.top; i++) {
 			glPushMatrix();
 				if (src == &B && i == B.top - 1)
-					glTranslatef(B.pole_pos_x + add_xpos, B.disk_pos_y[i], 0);
+					glTranslatef(B.tower_pos_x + add_xpos, B.disk_pos_y[i], 0);
 				else
-					glTranslatef(B.pole_pos_x, B.disk_pos_y[i], 0);
+					glTranslatef(B.tower_pos_x, B.disk_pos_y[i], 0);
 				glRotatef(85, 1, 0, 0);
 				glColor3f(1, 1, 1);
 				glutSolidTorus(DISK_RADIUS, B.size[i], 20, 20);
 			glPopMatrix();
 		}
 
-		//Disks on the third pole
+		//Disks on the third tower
 		for(int i=0; i<C.top; i++) {
 			glPushMatrix();
 				if (src == &C && i == C.top - 1)
-					glTranslatef(C.pole_pos_x + add_xpos, C.disk_pos_y[i], 0);
+					glTranslatef(C.tower_pos_x + add_xpos, C.disk_pos_y[i], 0);
 				else
-					glTranslatef(C.pole_pos_x, C.disk_pos_y[i], 0);
+					glTranslatef(C.tower_pos_x, C.disk_pos_y[i], 0);
 				glRotatef(85, 1, 0, 0);
 				glColor3f(1,1,1);
 				glutSolidTorus(DISK_RADIUS, C.size[i], 20, 20);
@@ -171,7 +170,7 @@ void set_material(char id) {
     GLfloat shininess = 5;
 
     switch (id) {
-        case 'p':
+        case 't':
             diffuse_coeffs[0] = 1;
             diffuse_coeffs[1] = 0.88;
             diffuse_coeffs[2] = 0.4;

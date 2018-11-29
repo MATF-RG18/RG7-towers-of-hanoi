@@ -2,7 +2,7 @@
 #define _ALGORITHM_H_
 
 #include "stack.h"
-
+#define MAX_MOVES 1024 //MAX_DISK_NUM = 10 --> MAX_MOVES = 2^10 - 1 
 
 //Structure that keeps track of moves made by solving algorithm
 typedef struct _hmove {
@@ -11,7 +11,7 @@ typedef struct _hmove {
 } Hmove;
 
 //Array for storing all moves made by solving algorithm
-Hmove hanoi_moves[MAX_SIZE];
+Hmove hanoi_moves[MAX_MOVES];
 
 //Indicator that solving by algorithm is active
 int hanoi_active;

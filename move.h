@@ -6,6 +6,7 @@
 
 #define TIMER_ID 0
 #define TIMER_INTERVAL 20
+#define MAX_SIZE 100
 
 //Move variables
 int moving_up;			//Moving disk up

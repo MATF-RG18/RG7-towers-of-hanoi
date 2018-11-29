@@ -51,8 +51,8 @@ int main(int argc, char **argv) {
     //If the player enters number of disks
     if(argc > 1) {
         int n = atoi(argv[1]);
-        if(n > MAX_SIZE) {
-            printf("Number of disks must be smaller then %d\n", MAX_SIZE);
+        if(n > MAX_DISK_NUM || n < 1) {
+            printf("Number of disks must be between 1 and %d\n", MAX_DISK_NUM);
             exit(EXIT_FAILURE);
         }
         else {
@@ -73,8 +73,8 @@ int main(int argc, char **argv) {
 //initialization of the variables
 void init() {
 
-    POLE_HEIGHT = NO_OF_DISKS * DISK_HEIGHT + 1;
-    initializeStack();
+    TOWER_HEIGHT = NO_OF_DISKS * DISK_HEIGHT + 1;
+    initialize_stack();
 
     //Initializing move variables
     moving_up = 1;	//First, we are moving up
@@ -116,7 +116,7 @@ static void on_display(void) {
     );
 
     draw_background(); //Drawing background
-    draw_poles(); //Drawing poles
+    draw_towers(); //Drawing towers
     draw_disks(); //Drawing disks
 
     //Printing message to the screen
@@ -176,7 +176,7 @@ static void on_keyboard(unsigned char key, int x, int y) {
 
         //move from A to B
         case 'a':
-            if (!move_ongoing) {
+            if (!move_ongoing && !hanoi_active) {
                 src = &A;
                 dest = &B;
                 initialize_move();
@@ -184,7 +184,7 @@ static void on_keyboard(unsigned char key, int x, int y) {
             break;
         //move from B to A
         case 'A':
-            if (!move_ongoing) {
+            if (!move_ongoing && !hanoi_active) {
                 src = &B;
                 dest = &A;
                 initialize_move();
@@ -192,7 +192,7 @@ static void on_keyboard(unsigned char key, int x, int y) {
             break;
         //move from A to C
         case 's':
-            if (!move_ongoing) {
+            if (!move_ongoing && !hanoi_active) {
                 src = &A;
                 dest = &C;
                 initialize_move();
@@ -200,7 +200,7 @@ static void on_keyboard(unsigned char key, int x, int y) {
         break;
         //move from C to A
         case 'S':
-            if (!move_ongoing) {
+            if (!move_ongoing && !hanoi_active) {
                 src = &C;
                 dest = &A;
                 initialize_move();
@@ -208,7 +208,7 @@ static void on_keyboard(unsigned char key, int x, int y) {
             break;
         //move from B to C
         case 'd':
-            if (!move_ongoing) {
+            if (!move_ongoing && !hanoi_active) {
                 src = &B;
                 dest = &C;
                 initialize_move();
@@ -216,7 +216,7 @@ static void on_keyboard(unsigned char key, int x, int y) {
             break;
         //move from C to B
         case 'D':
-            if (!move_ongoing) {
+            if (!move_ongoing && !hanoi_active) {
                 src = &C;
                 dest = &B;
                 initialize_move();
@@ -224,7 +224,9 @@ static void on_keyboard(unsigned char key, int x, int y) {
             break;
         case 'u':
         case 'U':
-            undo_move();
+            if (!move_ongoing) {
+                undo_move();
+            }
             break;
     }
 }
@@ -252,7 +254,7 @@ void show_message() {
 
     glPopMatrix();
 
-    //Printing pole names to the screen
+    //Printing tower names to the screen
     char letters[] = {'A', 'B', 'C', '\0'};
     float distance =-1.35;
 

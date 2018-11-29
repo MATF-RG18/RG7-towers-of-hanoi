@@ -1,4 +1,4 @@
-//Code taken from http://poincare.matf.bg.ac.rs/~ivan/?content=rg;
+//Code copied from http://poincare.matf.bg.ac.rs/~ivan/?content=rg;
 //Code translated to english and adapted for this project
 
 #include "image.h"
