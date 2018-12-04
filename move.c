@@ -1,6 +1,8 @@
 #include "move.h"
 
 extern char message[MAX_SIZE];
+int bounce;
+int bounce_counter;
 
 void initialize_move() {
     sprintf(message, "Moving from %c to %c.\n", src->id, dest->id);
@@ -11,8 +13,10 @@ void initialize_move() {
     move_count++;
 
     //Calling timer function
-    glutTimerFunc(TIMER_INTERVAL, on_timer, TIMER_ID);
     move_ongoing = 1;
+    bounce = 1;
+    bounce_counter = 0;
+    glutTimerFunc(TIMER_INTERVAL, on_timer, TIMER_ID);
 }
 
 void on_timer(int value) {
@@ -39,10 +43,13 @@ void perform_move() {
     //If the tower is empty, decrementing top would cause error
     int dest_top = (dest->top == 0) ? 0 : dest->top - 1;
 
+    if(bounce != 0) { bouncing(); }
+
     //moving disk up until it reaches top of the tower
-    if(moving_up && src->disk_pos_y[src->top -1] <= TOWER_HEIGHT + DISK_HEIGHT) {
-        src->disk_pos_y[src->top -1] = src->disk_pos_y[src->top -1] + speed;
-        if(src->disk_pos_y[src->top -1] > TOWER_HEIGHT + DISK_HEIGHT) {
+    if(moving_up && src->disk_pos_y[src->top - 1] <= TOWER_HEIGHT + DISK_HEIGHT) {
+        src->disk_pos_y[src->top - 1] = src->disk_pos_y[src->top - 1] + speed;
+
+        if(src->disk_pos_y[src->top - 1] > TOWER_HEIGHT + DISK_HEIGHT) {
             moving_up = 0;
             moving_side = 1;
         }
@@ -53,6 +60,9 @@ void perform_move() {
         add_xpos = add_xpos + speed;
 
         if(src->tower_pos_x + add_xpos >= dest->tower_pos_x) {
+            //In case that distance isn't divisible by speed
+            add_xpos = dest->tower_pos_x - src->tower_pos_x;
+
             moving_side = 0;
             moving_down = 1;
         }
@@ -63,6 +73,9 @@ void perform_move() {
         add_xpos = add_xpos - speed;
 
         if(src->tower_pos_x + add_xpos <= dest->tower_pos_x) {
+            //In case that distance isn't divisible by speed
+            add_xpos = dest->tower_pos_x - src->tower_pos_x;
+
             moving_side = 0;
             moving_down = 1;
         }
@@ -109,11 +122,32 @@ void perform_move() {
     }
 }
 
+void bouncing() {
+    if(bounce == 1) {
+        for (int i = 0; i < src->top-1; i++) {
+            src->disk_pos_y[i] = src->disk_pos_y[i] + 0.007*(i+2);
+        }
+        bounce_counter++;
+        if(bounce_counter > 8){
+            bounce = 2;
+        }
+    }
+    else if(bounce == 2) {
+        for (int i = 0; i < src->top-1; i++) {
+            src->disk_pos_y[i] = src->disk_pos_y[i] - 0.007*(i+2);
+        }
+        bounce_counter--;
+        if(bounce_counter == 0){
+            bounce = 0;
+        }
+    }
+
+}
+
 int is_valid_move() {
 
     //If the moved disk is bigger than the disk on top
     if(dest->top != 0 && src->size[src->top - 1] > dest->size[dest->top - 1]) {
-        //move_ongoing = 0;
         sprintf(message, "Disk must be smaller then the disk on top\n");
         glutPostRedisplay(); //This is called so that message can be shown
         return 0;
@@ -130,5 +164,5 @@ int is_valid_move() {
 }
 
 int is_solved() {
-    return (C.top == NO_OF_DISKS);
+    return (C.top == DISK_NUM);
 }

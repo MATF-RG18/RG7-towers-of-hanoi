@@ -18,7 +18,7 @@ The Tower of Hanoi is a mathematical game or puzzle. It consists of three rods a
 
 * Prerequisites: OpenGL/GLUT libraries installes
 
-* Run make from the project directory. 
+* Run make from the project directory.
 * run ./towers_of_hanoi
 * _if you want to play with custom number of disks run ./towers_of_hanoi n (where n is the number of disks that you want)_
 

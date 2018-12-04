@@ -8,7 +8,7 @@ void hanoi_solve() {
     m = 0; //counting moves in hanoi_alg() function
 
     //calling algorithm for solving
-    hanoi_alg(NO_OF_DISKS, &A, &C, &B);
+    hanoi_alg(DISK_NUM, &A, &C, &B);
 
     hanoi_counter = 0; //counter that shows how many moves are performed,
                        //used in perform_move() function in move.c file

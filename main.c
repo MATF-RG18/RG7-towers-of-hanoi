@@ -51,17 +51,17 @@ int main(int argc, char **argv) {
     //If the player enters number of disks
     if(argc > 1) {
         int n = atoi(argv[1]);
-        if(n > MAX_DISK_NUM || n < 1) {
-            printf("Number of disks must be between 1 and %d\n", MAX_DISK_NUM);
+        if(n < 1 || n > MAX_DISK_NUM) {
+            fprintf(stderr, "Number of disks must be between 1 and %d\n", MAX_DISK_NUM);
             exit(EXIT_FAILURE);
         }
         else {
-            NO_OF_DISKS = n;
+            DISK_NUM = n;
         }
     }
     //By default, number of disks is 6
     else
-        NO_OF_DISKS = 6;
+        DISK_NUM = 6;
 
 
     init();
@@ -73,7 +73,7 @@ int main(int argc, char **argv) {
 //initialization of the variables
 void init() {
 
-    TOWER_HEIGHT = NO_OF_DISKS * DISK_HEIGHT + 1;
+    TOWER_HEIGHT = DISK_NUM * DISK_HEIGHT + 0.75;
     initialize_stack();
 
     //Initializing move variables
@@ -82,7 +82,7 @@ void init() {
     moving_side = 0;
     move_done = 0;
     add_xpos = 0.0;
-    speed = 0.09;
+    speed = 0.1;
     move_ongoing = 0; //Initialy, disks are not moving
     move_count = 0;
 
@@ -164,10 +164,10 @@ static void on_keyboard(unsigned char key, int x, int y) {
         // Stopping move
         case 'q':
         case 'Q':
-            move_ongoing = 0;
+            //move_ongoing = 0;
             hanoi_active = 0;
             break;
-        // Activating solving puzzle by algorithm
+        // Activate puzzle solving by algorithm
         case 'h':
         case 'H':
             restart();
@@ -256,7 +256,7 @@ void show_message() {
 
     //Printing tower names to the screen
     char letters[] = {'A', 'B', 'C', '\0'};
-    float distance =-1.35;
+    double distance =-1.35;
 
     glPushMatrix();
         for (c=letters; *c != '\0'; c++){

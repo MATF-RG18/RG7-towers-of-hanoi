@@ -15,8 +15,8 @@ int moving_side;		//Moving left or right
 int move_done;			//Move performed, updating stack
 int move_ongoing;		//Indicator that disk is moving
 
-float add_xpos;			//Increment of x position while moving disk left or right
-float speed;			//Positions increment while moving disks
+double add_xpos;			//Increment of x position while moving disk left or right
+double speed;			//Positions increment while moving disks
 
 int move_count;         //Counting number of moves made
 
@@ -27,6 +27,9 @@ void initialize_move();
 
 //performing the selected move
 void perform_move();
+
+//Bounce disks
+void bouncing();
 
 //checking if selected move is valid
 int is_valid_move();

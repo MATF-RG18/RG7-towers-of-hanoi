@@ -1,6 +1,6 @@
 #include "draw.h"
 
-extern float add_xpos;
+extern double add_xpos;
 
 void draw_background() {
     glPushMatrix();
