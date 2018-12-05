@@ -44,8 +44,7 @@ int main(int argc, char **argv) {
     //Initializing openGL
     glClearColor(0.1, 0.1, 0.1, 0);
     glEnable(GL_DEPTH_TEST);
-    glShadeModel(GL_SMOOTH);
-
+    glEnable(GL_TEXTURE_2D);
 
     //Resolving number of disks
     //If the player enters number of disks
@@ -59,10 +58,8 @@ int main(int argc, char **argv) {
             DISK_NUM = n;
         }
     }
-    //By default, number of disks is 6
-    else
+    else //By default, number of disks is 6
         DISK_NUM = 6;
-
 
     init();
     glutMainLoop();
@@ -90,8 +87,10 @@ void init() {
 
     message[0] = '\0';
 
-    //Loading background texture
+    set_light();
+    //Loading textures
     load_background();
+    load_platform_tex();
 }
 
 void restart() {
@@ -101,8 +100,6 @@ void restart() {
 
 static void on_display(void) {
 
-    set_light();
-
     //Clearing buffers
     glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -110,7 +107,7 @@ static void on_display(void) {
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     gluLookAt(
-        0, 0, 10,
+        0, 1, 10,
         0, 0, 0,
         0, 1, 0
     );
@@ -129,14 +126,13 @@ static void on_display(void) {
 void set_light(){
 
     //Light position
-    GLfloat light_position[] = { 5, 5, 5, 0 };
-
+    GLfloat light_position[] = { 10, 10, 15, 0 };
     //Ambient light
     GLfloat ambient_light[] = { 0.1, 0.1, 0.1, 1 };
     //Diffuse light
     GLfloat diffuse_light[] = { 1, 1, 1, 1 };
     //Specular light
-    GLfloat specular_light[] = {0.6, 0.6, 0.6, 1 };
+    GLfloat specular_light[] = {0.4, 0.4, 0.4, 1 };
 
     //Setting light
     glEnable(GL_LIGHTING);
@@ -153,6 +149,7 @@ static void on_keyboard(unsigned char key, int x, int y) {
     switch (key) {
         case 27: //ESC
             glDeleteTextures(1, &bg_tex_name);
+            glDeleteTextures(1, &platform_tex);
             exit(0);
             break;
         //restart
@@ -170,8 +167,10 @@ static void on_keyboard(unsigned char key, int x, int y) {
         // Activate puzzle solving by algorithm
         case 'h':
         case 'H':
-            restart();
-            hanoi_solve();
+            if(!hanoi_active) {
+                restart();
+                hanoi_solve();
+            }
             break;
 
         //move from A to B
@@ -238,7 +237,7 @@ static void on_reshape(int w, int h) {
     // Setting projection
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(60, (float) w / h, 1, 30);
+    gluPerspective(60, (float) w / h, 1, 15);
 }
 
 void show_message() {
@@ -246,7 +245,7 @@ void show_message() {
 
     glColor3f(1, 1, 1);
     glPushMatrix();
-        glTranslatef(-2 ,-2, 5);
+        glTranslatef(-2, -2, 5);
         glRasterPos3f(0, 1.5, 0.5);
 
         for (c=message; *c != '\0'; c++)
@@ -260,7 +259,7 @@ void show_message() {
 
     glPushMatrix();
         for (c=letters; *c != '\0'; c++){
-            glRasterPos3f(distance, 0, 5);
+            glRasterPos3f(distance, -0.05, 5);
             glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, *c);
             distance += 1.3;
         }

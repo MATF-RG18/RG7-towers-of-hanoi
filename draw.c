@@ -3,35 +3,31 @@
 extern double add_xpos;
 
 void draw_background() {
-    glPushMatrix();
-
-    //Drawing background
+    //Background is not affected by lighting
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
     glBindTexture(GL_TEXTURE_2D, bg_tex_name);
+
+    glPushMatrix();
+    //Rotating background image in front of camera
+    glRotatef(-4.8, 1, 0, 0);
+    //Drawing background
     glBegin(GL_QUADS);
         glNormal3f(0, 0, 1);
-
-        glTexCoord2f(0, 0);
-        glVertex3f(-15, -15, -5);
-
-        glTexCoord2f(1, 0);
-        glVertex3f(15, -15, -5);
-
-        glTexCoord2f(1, 1);
-        glVertex3f(15, 15, -5);
-
-        glTexCoord2f(0, 1);
-        glVertex3f(-15, 15, -5);
+        glTexCoord2f(0, 0); glVertex3f(-15, -15, -2);
+        glTexCoord2f(1, 0); glVertex3f(15, -15, -2);
+        glTexCoord2f(1, 1); glVertex3f(15, 15, -2);
+        glTexCoord2f(0, 1); glVertex3f(-15, 15, -2);
     glEnd();
     glPopMatrix();
 
     glBindTexture(GL_TEXTURE_2D, 0);
-
 }
 
 void draw_towers() {
-
+    //Towers are affected by lighting
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+    glBindTexture(GL_TEXTURE_2D, platform_tex);
     set_material('t');
-	GLUquadricObj *obj = gluNewQuadric();
 
 	//Drawing plarform for towers
 	glTranslatef(0, -1, 0);
@@ -41,75 +37,75 @@ void draw_towers() {
 
 		//Front
 		glNormal3f(0, 0, 1);
-		glVertex3f(-4, -1, 1.5);
-		glVertex3f(4, -1, 1.5);
-		glVertex3f(4, 0, 1.5);
-		glVertex3f(-4, 0, 1.5);
+		glTexCoord2f(0, 0); glVertex3f(-4, -1, 1.5);
+        glTexCoord2f(1, 0);	glVertex3f(4, -1, 1.5);
+        glTexCoord2f(1, 1);	glVertex3f(4, 0, 1.5);
+        glTexCoord2f(0, 1);	glVertex3f(-4, 0, 1.5);
 
 		//Right
 		glNormal3f(1, 0, 0);
-		glVertex3f(4, -1, -1.5);
-		glVertex3f(4, 0, -1.5);
-		glVertex3f(4, 0, 1.5);
-		glVertex3f(4, -1, 1.5);
+		glTexCoord2f(0, 0); glVertex3f(4, -1, -1.5);
+		glTexCoord2f(1, 0); glVertex3f(4, 0, -1.5);
+		glTexCoord2f(1, 1); glVertex3f(4, 0, 1.5);
+		glTexCoord2f(0, 1); glVertex3f(4, -1, 1.5);
 
 		//Back
 		glNormal3f(0, 0, -1);
-		glVertex3f(-4, -1, -1.5);
-		glVertex3f(-4, 0, -1.5);
-		glVertex3f(4, 0, -1.5);
-		glVertex3f(4, -1, -1.5);
+		glTexCoord2f(0, 0); glVertex3f(-4, -1, -1.5);
+		glTexCoord2f(0, 1); glVertex3f(-4, 0, -1.5);
+		glTexCoord2f(1, 1); glVertex3f(4, 0, -1.5);
+		glTexCoord2f(1, 0); glVertex3f(4, -1, -1.5);
 
 		//Left
 		glNormal3f(-1, 0, 0);
-		glVertex3f(-4, -1, -1.5);
-		glVertex3f(-4, -1, 1.5);
-		glVertex3f(-4, 0, 1.5);
-		glVertex3f(-4, 0, -1.5);
+		glTexCoord2f(0, 0); glVertex3f(-4, -1, -1.5);
+		glTexCoord2f(0, 1); glVertex3f(-4, -1, 1.5);
+		glTexCoord2f(1, 1); glVertex3f(-4, 0, 1.5);
+		glTexCoord2f(1, 0); glVertex3f(-4, 0, -1.5);
 
 		//Top
 		glNormal3f(0, 1, 0);
-		glVertex3f(-4, 0, -1.5);
-		glVertex3f(-4, 0, 1.5);
-		glVertex3f(4, 0, 1.5);
-		glVertex3f(4, 0, -1.5);
+		glTexCoord2f(0, 0); glVertex3f(-4, 0, -1.5);
+		glTexCoord2f(0, 1); glVertex3f(-4, 0, 1.5);
+		glTexCoord2f(1, 1); glVertex3f(4, 0, 1.5);
+		glTexCoord2f(1, 0); glVertex3f(4, 0, -1.5);
 
 		//Bottom
 		glNormal3f(0, -1, 0);
-		glVertex3f(-4, -1, -1.5);
-		glVertex3f(-4, -1, 1.5);
-		glVertex3f(4, -1, 1.5);
-		glVertex3f(4, -1, -1.5);
+		glTexCoord2f(0, 0); glVertex3f(-4, -1, -1.5);
+		glTexCoord2f(0, 1); glVertex3f(-4, -1, 1.5);
+		glTexCoord2f(1, 1); glVertex3f(4, -1, 1.5);
+		glTexCoord2f(1, 0); glVertex3f(4, -1, -1.5);
 	glEnd();
-
 	glPopMatrix();
 
-
 	//Drawing towers
-	glColor3f (0, 0.7, 0.5);
-	glPushMatrix();
+	GLUquadricObj *obj = gluNewQuadric();
+    gluQuadricTexture(obj, platform_tex);
 
+    glPushMatrix();
 		//First tower
 		glTranslatef(-TOWER_DISTANCE, 0, 0);
 		glPushMatrix();
 			glRotatef(-90,1,0,0);
-			gluCylinder(obj, TOWER_RADIUS, TOWER_RADIUS, TOWER_HEIGHT, 20, 1);
+			gluCylinder(obj, TOWER_RADIUS, TOWER_RADIUS, TOWER_HEIGHT, 20, 20);
 		glPopMatrix();
 
 		//Second tower
 		glTranslatef(TOWER_DISTANCE,0,0);
 		glPushMatrix();
 			glRotatef(-90,1,0,0);
-			gluCylinder(obj, TOWER_RADIUS, TOWER_RADIUS, TOWER_HEIGHT, 20, 1);
+			gluCylinder(obj, TOWER_RADIUS, TOWER_RADIUS, TOWER_HEIGHT, 20, 20);
 		glPopMatrix();
 
 		//Third tower
 		glTranslatef(TOWER_DISTANCE,0,0);
 		glPushMatrix();
 			glRotatef(-90,1,0,0);
-			gluCylinder(obj, TOWER_RADIUS, TOWER_RADIUS, TOWER_HEIGHT, 20, 1);
+			gluCylinder(obj, TOWER_RADIUS, TOWER_RADIUS, TOWER_HEIGHT, 20, 20);
 		glPopMatrix();
 	glPopMatrix();
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void draw_disks() {
@@ -172,8 +168,8 @@ void set_material(char id) {
     switch (id) {
         case 't':
             diffuse_coeffs[0] = 1;
-            diffuse_coeffs[1] = 0.88;
-            diffuse_coeffs[2] = 0.4;
+            diffuse_coeffs[1] = 1;
+            diffuse_coeffs[2] = 0.7;
             break;
         case 'd':
             diffuse_coeffs[0] = 0.2;

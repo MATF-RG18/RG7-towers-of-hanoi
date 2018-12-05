@@ -1,4 +1,4 @@
-//Code taken from http://poincare.matf.bg.ac.rs/~ivan/?content=rg;
+//Code copied from http://poincare.matf.bg.ac.rs/~ivan/?content=rg;
 //Code translated to english and adapted for this project
 
 #ifndef _IMAGE_H_
@@ -9,9 +9,8 @@
 #include <stdio.h>
 #include <GL/glut.h>
 
-//Background texture
-#define BACKGROUND_FILENAME "bg.bmp"
 GLuint bg_tex_name;
+GLuint platform_tex;
 
 //Structures that represent bitmap headers
 typedef struct {
@@ -45,7 +44,6 @@ typedef struct Image {
 //Pointer to initialized Image structure
 Image *image_init(int width, int height);
 
-
 //Free Image space
 void image_done(Image *image);
 
@@ -54,5 +52,8 @@ void image_read(Image *image, char *filename);
 
 //Load background texture
 void load_background();
+
+//Load platform texture
+void load_platform_tex();
 
 #endif

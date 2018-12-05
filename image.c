@@ -120,33 +120,53 @@ void image_read(Image *image, char *filename) {
 }
 
 void load_background() {
-    Image * image;
 
-    //Enabling textures
-    glEnable(GL_TEXTURE_2D);
+    //glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
-    glTexEnvf(GL_TEXTURE_ENV,
-        GL_TEXTURE_ENV_MODE,
-        GL_REPLACE);
+    //Initializing Image structure
+    Image *image = image_init(0, 0);
 
-        //Initializing Image structure
-        image = image_init(0, 0);
+    //Creating texture for background
+    image_read(image, "bg.bmp");
 
-        //Creating texture for background
-        image_read(image, BACKGROUND_FILENAME);
+    //Setting texture parameters
+    glGenTextures(1, &bg_tex_name);
 
-        //Setting texture parameters
-        glGenTextures(1, &bg_tex_name);
+    glBindTexture(GL_TEXTURE_2D, bg_tex_name); //Binding texture to a pointer
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB,
+                 image->width, image->height, 0,
+                 GL_RGB, GL_UNSIGNED_BYTE, image->pixels);
+    glBindTexture(GL_TEXTURE_2D, 0); //unbinding
 
-        glBindTexture(GL_TEXTURE_2D, bg_tex_name); //Binding texture to a pointer
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB,
-                     image->width, image->height, 0,
-                     GL_RGB, GL_UNSIGNED_BYTE, image->pixels);
-        glBindTexture(GL_TEXTURE_2D, 0); //unbinding
+    image_done(image);
+}
 
-        image_done(image);
+void load_platform_tex() {
+
+    //glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
+    //Initializing Image structure
+    Image *image = image_init(0, 0);
+
+    //Creating texture for background
+    image_read(image, "wood.bmp");
+
+    //Setting texture parameters
+    glGenTextures(1, &platform_tex);
+
+    glBindTexture(GL_TEXTURE_2D, platform_tex); //Binding texture to a pointer
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB,
+                 image->width, image->height, 0,
+                 GL_RGB, GL_UNSIGNED_BYTE, image->pixels);
+    glBindTexture(GL_TEXTURE_2D, 0); //unbinding
+
+    image_done(image);
 }
