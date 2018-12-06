@@ -196,7 +196,7 @@ static void on_keyboard(unsigned char key, int x, int y) {
                 dest = &C;
                 initialize_move();
             }
-        break;
+            break;
         //move from C to A
         case 'S':
             if (!move_ongoing && !hanoi_active) {

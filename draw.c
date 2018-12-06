@@ -167,9 +167,10 @@ void set_material(char id) {
 
     switch (id) {
         case 't':
+			//TODO: fix colors
             diffuse_coeffs[0] = 1;
             diffuse_coeffs[1] = 1;
-            diffuse_coeffs[2] = 0.7;
+            diffuse_coeffs[2] = 1;
             break;
         case 'd':
             diffuse_coeffs[0] = 0.2;

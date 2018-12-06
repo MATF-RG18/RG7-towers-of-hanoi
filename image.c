@@ -127,7 +127,7 @@ void load_background() {
     Image *image = image_init(0, 0);
 
     //Creating texture for background
-    image_read(image, "bg.bmp");
+    image_read(image, "Textures/bg.bmp");
 
     //Setting texture parameters
     glGenTextures(1, &bg_tex_name);
@@ -153,7 +153,8 @@ void load_platform_tex() {
     Image *image = image_init(0, 0);
 
     //Creating texture for background
-    image_read(image, "wood.bmp");
+    //TODO: find larger image
+    image_read(image, "Textures/wood.bmp");
 
     //Setting texture parameters
     glGenTextures(1, &platform_tex);
@@ -161,8 +162,8 @@ void load_platform_tex() {
     glBindTexture(GL_TEXTURE_2D, platform_tex); //Binding texture to a pointer
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB,
                  image->width, image->height, 0,
                  GL_RGB, GL_UNSIGNED_BYTE, image->pixels);
