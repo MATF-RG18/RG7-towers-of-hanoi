@@ -11,15 +11,15 @@
 #define MAX_DISK_NUM 10
 
 int DISK_NUM;
-double TOWER_HEIGHT;
+float TOWER_HEIGHT;
 
 //Structure that keeps informations for each tower
 typedef struct _stack {
-    int top;					//number of disks
-    double size[MAX_DISK_NUM];		//size of each disk
-    double tower_pos_x;			//tower position along the X axis
-    double disk_pos_y[MAX_DISK_NUM];	//position of each disk along the Y axis
-    char id;                    //id of the tower
+    int top;                        //number of disks
+    float size[MAX_DISK_NUM];		//size of each disk
+    float tower_pos_x;			    //tower position along the X axis
+    float disk_pos_y[MAX_DISK_NUM];	//position of each disk along the Y axis
+    char id;                        //ID of the tower
 } Stack;
 
 //Towers A, B and C
@@ -35,9 +35,9 @@ Stack *dest;
 void initialize_stack();
 
 //Pop disk
-double pop(Stack *p);
+float pop(Stack *p);
 
 //Push disk
-void push(Stack *p, double size);
+void push(Stack *p, float size);
 
 #endif

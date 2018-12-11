@@ -74,15 +74,16 @@ void init() {
     initialize_stack();
 
     //Initializing move variables
+    move_ongoing = 0; //Initialy, disks are not moving
     moving_up = 1;	//First, we are moving up
     moving_down = 0;
     moving_side = 0;
     move_done = 0;
-    add_xpos = 0.0;
-    speed = 0.1;
-    move_ongoing = 0; //Initialy, disks are not moving
     move_count = 0;
 
+    speed = 0.1;
+    add_xpos = 0.0;
+    h_alpha = 0; //Rotation angle for the hammer
     hanoi_active = 0; //Solving by algorithm is not active
 
     message[0] = '\0';
@@ -107,7 +108,7 @@ static void on_display(void) {
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     gluLookAt(
-        0, 1, 10,
+        0, 2, 10,
         0, 0, 0,
         0, 1, 0
     );
@@ -115,6 +116,7 @@ static void on_display(void) {
     draw_background(); //Drawing background
     draw_towers(); //Drawing towers
     draw_disks(); //Drawing disks
+    draw_hammer(); //Drawing hammer
 
     //Printing message to the screen
     show_message();
@@ -125,6 +127,7 @@ static void on_display(void) {
 
 void set_light(){
 
+    //TODO: fix light
     //Light position
     GLfloat light_position[] = { 10, 10, 15, 0 };
     //Ambient light
@@ -246,7 +249,7 @@ void show_message() {
     glColor3f(1, 1, 1);
     glPushMatrix();
         glTranslatef(-2, -2, 5);
-        glRasterPos3f(0, 1.5, 0.5);
+        glRasterPos3f(0, 4.9, 0.5);
 
         for (c=message; *c != '\0'; c++)
             glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, *c);
@@ -255,11 +258,11 @@ void show_message() {
 
     //Printing tower names to the screen
     char letters[] = {'A', 'B', 'C', '\0'};
-    double distance =-1.35;
+    float distance =-1.35;
 
     glPushMatrix();
         for (c=letters; *c != '\0'; c++){
-            glRasterPos3f(distance, -0.05, 5);
+            glRasterPos3f(distance, 0.4, 5);
             glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, *c);
             distance += 1.3;
         }

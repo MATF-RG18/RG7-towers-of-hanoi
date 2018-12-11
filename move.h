@@ -9,29 +9,41 @@
 #define MAX_SIZE 100
 
 //Move variables
-int moving_up;			//Moving disk up
-int moving_down;		//Moving disk down
-int moving_side;		//Moving left or right
-int move_done;			//Move performed, updating stack
-int move_ongoing;		//Indicator that disk is moving
+int move_count;     //Counting number of moves made
+int move_ongoing;	//Indicator that disk is moving
+int move_done;		//Move completed indicator
+int moving_up;		//Moving disk up
+int moving_down;	//Moving disk down
+int moving_side;	//Moving left or right
 
-double add_xpos;			//Increment of x position while moving disk left or right
-double speed;			//Positions increment while moving disks
+float speed;		//Positions increment while moving disks
+float add_xpos;		//Increment of x position while moving disk left or right
 
-int move_count;         //Counting number of moves made
+float h_alpha;      //Rotation angle for hammer
+int hammer_active;  //Indicator that hammer is moving to hit the platform
+int bounce;         //Bounce variables
+int bounce_counter;
 
+
+//Timer function
 void on_timer(int value);
 
 //Setting up selected move
 void initialize_move();
 
-//performing the selected move
+//Performing the selected move, moving disks
 void perform_move();
 
-//Bounce disks
+//Updating stacks when current move is done and initializing next move
+void move_complete();
+
+//Hitting source tower with hammer
+void hammer_hit();
+
+//Bounce disks after the hammer hit
 void bouncing();
 
-//checking if selected move is valid
+//Checking if selected move is valid
 int is_valid_move();
 
 //Checking if the puzzle is solved

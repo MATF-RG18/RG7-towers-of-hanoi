@@ -1,7 +1,6 @@
 #include "algorithm.h"
 
 extern void on_timer();
-extern int move_ongoing;
 
 void hanoi_solve() {
     hanoi_active = 1; //solving by algorithm activated

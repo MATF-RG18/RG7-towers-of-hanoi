@@ -1,8 +1,6 @@
 #include "move.h"
 
 extern char message[MAX_SIZE];
-int bounce;
-int bounce_counter;
 
 void initialize_move() {
     sprintf(message, "Moving from %c to %c.\n", src->id, dest->id);
@@ -10,12 +8,13 @@ void initialize_move() {
     //Checking if the move is valid
     if(!is_valid_move()) { return; }
 
+    //Activating hammer and bouncing
     move_count++;
-
-    //Calling timer function
-    move_ongoing = 1;
+    hammer_active = 1;
     bounce = 1;
     bounce_counter = 0;
+
+    //Calling timer function
     glutTimerFunc(TIMER_INTERVAL, on_timer, TIMER_ID);
 }
 
@@ -25,16 +24,18 @@ void on_timer(int value) {
         return;
 
     //Performing selected move
-    perform_move();
+    if (hammer_active)
+        hammer_hit();
+    if (move_ongoing || hanoi_active)
+        perform_move();
 
     //Sending new picture to the screen
     glutPostRedisplay();
 
     //If the move is still active, timer function is called
-    if (move_ongoing || hanoi_active) {
+    if (hammer_active || move_ongoing || hanoi_active) {
         glutTimerFunc(TIMER_INTERVAL, on_timer, TIMER_ID);
     }
-
 }
 
 void perform_move() {
@@ -43,11 +44,11 @@ void perform_move() {
     //If the tower is empty, decrementing top would cause error
     int dest_top = (dest->top == 0) ? 0 : dest->top - 1;
 
-    if(bounce != 0) { bouncing(); }
+    if(bounce) { bouncing(); }
 
     //moving disk up until it reaches top of the tower
-    if(moving_up && src->disk_pos_y[src->top - 1] <= TOWER_HEIGHT + DISK_HEIGHT) {
-        src->disk_pos_y[src->top - 1] = src->disk_pos_y[src->top - 1] + speed;
+    if(moving_up) {
+        src->disk_pos_y[src->top - 1] += speed;
 
         if(src->disk_pos_y[src->top - 1] > TOWER_HEIGHT + DISK_HEIGHT) {
             moving_up = 0;
@@ -57,7 +58,7 @@ void perform_move() {
 
     //moving disk from left to right until it reaches position of the destination tower
     if(moving_side && src->tower_pos_x < dest->tower_pos_x) {
-        add_xpos = add_xpos + speed;
+        add_xpos += speed;
 
         if(src->tower_pos_x + add_xpos >= dest->tower_pos_x) {
             //In case that distance isn't divisible by speed
@@ -70,7 +71,7 @@ void perform_move() {
 
     //moving disk from right to left until it reaches position of the destination tower
     else if(moving_side && src->tower_pos_x > dest->tower_pos_x) {
-        add_xpos = add_xpos - speed;
+        add_xpos -= speed;
 
         if(src->tower_pos_x + add_xpos <= dest->tower_pos_x) {
             //In case that distance isn't divisible by speed
@@ -82,8 +83,8 @@ void perform_move() {
     }
 
     //moving disk down until it reaches disk on top
-    if(moving_down && src->disk_pos_y[src->top - 1] > dest->disk_pos_y[dest_top] + DISK_HEIGHT) {
-        src->disk_pos_y[src->top - 1] = src->disk_pos_y[src->top - 1] - speed;
+    if(moving_down) {
+        src->disk_pos_y[src->top - 1] -= speed;
 
         if(src->disk_pos_y[src->top - 1] <= dest->disk_pos_y[dest_top] + DISK_HEIGHT){
             moving_down = 0;
@@ -91,29 +92,35 @@ void perform_move() {
         }
     }
 
-    //move is performed, updating stacks and initializing next move
+    //move is completed, updating stacks and initializing next move
     if(move_done) {
-        push(dest, pop(src));
-        moving_up = 1;
-        move_done = 0;
-        add_xpos = 0.0;
-        message[0] = '\0';
+        move_complete();
+    }
+}
 
-        //if solving by algorithm is active we go to the next move in array hanoi_moves
-        if(hanoi_active) {
-            if(hanoi_counter == m-1) {
-                //all moves are performed
-                hanoi_active = 0;
-                sprintf(message, "Solved in %d moves!", m);
-                return;
-            }
-            hanoi_counter++;
-            src = hanoi_moves[hanoi_counter].h_src;
-            dest = hanoi_moves[hanoi_counter].h_dest;
+void move_complete() {
+
+    push(dest, pop(src));
+    moving_up = 1;
+    move_done = 0;
+    add_xpos = 0.0;
+    message[0] = '\0';
+
+    //If solving by algorithm is active proceed to the next move in the array 'hanoi_moves'
+    if(hanoi_active) {
+        if(hanoi_counter == m-1) {
+            //all moves are completed
+            hanoi_active = 0;
+            sprintf(message, "Solved in %d moves!", m);
+            return;
         }
-        //if human player is solving the puzzle, we wait for the next move
-        else
-            move_ongoing = 0;
+        hanoi_counter++;
+        src = hanoi_moves[hanoi_counter].h_src;
+        dest = hanoi_moves[hanoi_counter].h_dest;
+    }
+    //If human player is solving the puzzle, wait for the next move
+    else {
+        move_ongoing = 0;
 
         if(is_solved()) {
             sprintf(message, "Congratulations! You solved the puzzle in %d moves.\n", move_count);
@@ -122,19 +129,51 @@ void perform_move() {
     }
 }
 
+void hammer_hit() {
+    //Rotating hammer to left
+    if (src == &A || src == &B) {
+        if(!move_ongoing) {
+            h_alpha -= 5;
+            if(h_alpha <= -90.0)
+            move_ongoing = 1;
+        }
+        else {
+            h_alpha += 5;
+        }
+        if (h_alpha == 0)
+        hammer_active = 0;
+    }
+
+    //Rotating hammer to right
+    else if (src == &C) {
+        if(!move_ongoing) {
+            h_alpha += 5;
+            if(h_alpha >= 90.0)
+            move_ongoing = 1;
+        }
+        else {
+            h_alpha -= 5;
+        }
+        if (h_alpha == 0)
+        hammer_active = 0;
+    }
+}
+
 void bouncing() {
+    //Bounce up
     if(bounce == 1) {
         for (int i = 0; i < src->top-1; i++) {
-            src->disk_pos_y[i] = src->disk_pos_y[i] + 0.007*(i+2);
+            src->disk_pos_y[i] = src->disk_pos_y[i] + 0.01*(i+2);
         }
         bounce_counter++;
         if(bounce_counter > 8){
             bounce = 2;
         }
     }
+    //Bounce down
     else if(bounce == 2) {
         for (int i = 0; i < src->top-1; i++) {
-            src->disk_pos_y[i] = src->disk_pos_y[i] - 0.007*(i+2);
+            src->disk_pos_y[i] = src->disk_pos_y[i] - 0.01*(i+2);
         }
         bounce_counter--;
         if(bounce_counter == 0){

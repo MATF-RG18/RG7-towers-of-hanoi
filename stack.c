@@ -18,7 +18,7 @@ void initialize_stack()
     C.tower_pos_x = TOWER_DISTANCE;
 
     //computing disk size depending on number of disks
-    double size = DISK_RADIUS + DISK_NUM * 0.1;
+    float size = DISK_RADIUS + DISK_NUM * 0.1;
 
     //placing disks to first tower
     for(int i = 0; i < DISK_NUM; i++) {
@@ -28,20 +28,15 @@ void initialize_stack()
 }
 
 //Pop disc
-double pop(Stack *p) {
+float pop(Stack *p) {
 
-    double temp = p->size[p->top-1];		//size of popped disk
+    float temp = p->size[p->top-1];		//size of popped disk
     p->top--;
     return temp;
 }
 
 //Push disc
-void push(Stack *p, double size) {
-
-//    if(p->top == MAX_DISK_NUM) {
-//        fprintf(stderr, "Error: tower is full\n");
-//        exit(EXIT_FAILURE);
-//    }
+void push(Stack *p, float size) {
 
     p->size[p->top] = size;
     p->disk_pos_y[p->top] = DISK_HEIGHT * (p->top + 1) - DISK_HEIGHT/2;

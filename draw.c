@@ -1,6 +1,8 @@
 #include "draw.h"
 
-extern double add_xpos;
+extern float add_xpos;
+extern float h_alpha;
+extern int hanoi_active;
 
 void draw_background() {
     //Background is not affected by lighting
@@ -24,14 +26,13 @@ void draw_background() {
 }
 
 void draw_towers() {
+
     //Towers are affected by lighting
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
     glBindTexture(GL_TEXTURE_2D, platform_tex);
     set_material('t');
 
 	//Drawing plarform for towers
-	glTranslatef(0, -1, 0);
-
 	glPushMatrix();
 	glBegin(GL_QUADS);
 
@@ -121,7 +122,6 @@ void draw_disks() {
 				else
 					glTranslatef(A.tower_pos_x, A.disk_pos_y[i], 0);
 				glRotatef(90, 1, 0, 0);
-				glColor3f(1, 1, 1);
 				glutSolidTorus(DISK_RADIUS, A.size[i], 20, 20);
 			glPopMatrix();
 		}
@@ -133,8 +133,7 @@ void draw_disks() {
 					glTranslatef(B.tower_pos_x + add_xpos, B.disk_pos_y[i], 0);
 				else
 					glTranslatef(B.tower_pos_x, B.disk_pos_y[i], 0);
-				glRotatef(85, 1, 0, 0);
-				glColor3f(1, 1, 1);
+				glRotatef(90, 1, 0, 0);
 				glutSolidTorus(DISK_RADIUS, B.size[i], 20, 20);
 			glPopMatrix();
 		}
@@ -146,14 +145,41 @@ void draw_disks() {
 					glTranslatef(C.tower_pos_x + add_xpos, C.disk_pos_y[i], 0);
 				else
 					glTranslatef(C.tower_pos_x, C.disk_pos_y[i], 0);
-				glRotatef(85, 1, 0, 0);
-				glColor3f(1,1,1);
+				glRotatef(90, 1, 0, 0);
 				glutSolidTorus(DISK_RADIUS, C.size[i], 20, 20);
 			glPopMatrix();
 		}
 
 	glPopMatrix();
 
+}
+
+void draw_hammer() {
+	glPushMatrix();
+
+	glTranslatef(0, -1.7, 0); //platform height(1) + hammer width / 2 (0.7)
+	if(src == &B && !hanoi_active) {
+		glTranslatef(TOWER_DISTANCE, 0, 0);
+	}
+	glRotatef(h_alpha, 0, 0, 1);
+
+	//Drawing hammer head
+	glPushMatrix();
+		glTranslatef(0.7, -TOWER_DISTANCE, 0);
+		//glScalef(1.4, 0.6, 0.6);
+		glRotatef(-90, 0, 1, 0);
+		//glutSolidCube(1);
+		gluCylinder(gluNewQuadric(), 0.5, 0.5, 1.4, 20, 20);
+	glPopMatrix();
+
+	//Drawing hammer handle
+	glPushMatrix();
+		glTranslatef(0, -TOWER_DISTANCE, 0);
+		glRotatef(-90, 1, 0, 0);
+		gluCylinder(gluNewQuadric(), 0.1, 0.1, 2.5, 20, 20);
+	glPopMatrix();
+
+	glPopMatrix();
 }
 
 void set_material(char id) {
@@ -167,7 +193,6 @@ void set_material(char id) {
 
     switch (id) {
         case 't':
-			//TODO: fix colors
             diffuse_coeffs[0] = 1;
             diffuse_coeffs[1] = 1;
             diffuse_coeffs[2] = 1;
