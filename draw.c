@@ -1,6 +1,7 @@
 #include "draw.h"
 
 extern float add_xpos;
+extern float rotation;
 extern float h_alpha;
 extern int hanoi_active;
 
@@ -117,8 +118,10 @@ void draw_disks() {
 		//Disks on the first tower
 		for(int i=0; i<A.top; i++) {
 			glPushMatrix();
-				if(src == &A && i == A.top - 1)
+				if(src == &A && i == A.top - 1) {
 					glTranslatef(A.tower_pos_x + add_xpos, A.disk_pos_y[i], 0);
+					glRotatef(rotation, 0, 0, 1);
+				}
 				else
 					glTranslatef(A.tower_pos_x, A.disk_pos_y[i], 0);
 				glRotatef(90, 1, 0, 0);
@@ -129,8 +132,10 @@ void draw_disks() {
 		//Disks on the second tower
 		for(int i=0; i<B.top; i++) {
 			glPushMatrix();
-				if (src == &B && i == B.top - 1)
+				if (src == &B && i == B.top - 1) {
 					glTranslatef(B.tower_pos_x + add_xpos, B.disk_pos_y[i], 0);
+					glRotatef(rotation, 0, 0, 1);
+				}
 				else
 					glTranslatef(B.tower_pos_x, B.disk_pos_y[i], 0);
 				glRotatef(90, 1, 0, 0);
@@ -141,8 +146,10 @@ void draw_disks() {
 		//Disks on the third tower
 		for(int i=0; i<C.top; i++) {
 			glPushMatrix();
-				if (src == &C && i == C.top - 1)
+				if (src == &C && i == C.top - 1) {
 					glTranslatef(C.tower_pos_x + add_xpos, C.disk_pos_y[i], 0);
+					glRotatef(rotation, 0, 0, 1);
+				}
 				else
 					glTranslatef(C.tower_pos_x, C.disk_pos_y[i], 0);
 				glRotatef(90, 1, 0, 0);

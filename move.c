@@ -14,6 +14,9 @@ void initialize_move() {
     bounce = 1;
     bounce_counter = 0;
 
+    //Calculating increment of disk rotation based on tower distance
+    rotation_parameter = (360 * speed) / (dest->tower_pos_x - src->tower_pos_x);
+
     //Calling timer function
     glutTimerFunc(TIMER_INTERVAL, on_timer, TIMER_ID);
 }
@@ -59,10 +62,12 @@ void perform_move() {
     //moving disk from left to right until it reaches position of the destination tower
     if(moving_side && src->tower_pos_x < dest->tower_pos_x) {
         add_xpos += speed;
+        rotation += rotation_parameter;
 
         if(src->tower_pos_x + add_xpos >= dest->tower_pos_x) {
             //In case that distance isn't divisible by speed
             add_xpos = dest->tower_pos_x - src->tower_pos_x;
+            rotation = 0;
 
             moving_side = 0;
             moving_down = 1;
@@ -72,10 +77,12 @@ void perform_move() {
     //moving disk from right to left until it reaches position of the destination tower
     else if(moving_side && src->tower_pos_x > dest->tower_pos_x) {
         add_xpos -= speed;
+        rotation -= rotation_parameter;
 
         if(src->tower_pos_x + add_xpos <= dest->tower_pos_x) {
             //In case that distance isn't divisible by speed
             add_xpos = dest->tower_pos_x - src->tower_pos_x;
+            rotation = 0;
 
             moving_side = 0;
             moving_down = 1;
@@ -104,6 +111,9 @@ void move_complete() {
     moving_up = 1;
     move_done = 0;
     add_xpos = 0.0;
+    rotation = 0;
+    rotation_parameter = 0;
+
     message[0] = '\0';
 
     //If solving by algorithm is active proceed to the next move in the array 'hanoi_moves'

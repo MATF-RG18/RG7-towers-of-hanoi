@@ -1,7 +1,7 @@
 PROGRAM   = towers_of_hanoi
 CC        = gcc
 CFLAGS    = -Wall -Wextra -std=c99
-LDFLAGS   = -lGL -lGLU -lglut
+LDFLAGS   = -lGL -lGLU -lglut -lm
 DEP       = main.o \
 			stack.o \
 			draw.o \
