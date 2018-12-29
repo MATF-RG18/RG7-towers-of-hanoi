@@ -155,7 +155,7 @@ void hammer_hit() {
                 move_ongoing = 1;
         }
         else {
-            h_alpha += 5;
+            h_alpha += 6;
         }
         if (h_alpha == 0)
             hammer_active = 0;
@@ -169,7 +169,7 @@ void hammer_hit() {
                 move_ongoing = 1;
         }
         else {
-            h_alpha -= 5;
+            h_alpha -= 6;
         }
         if (h_alpha == 0)
             hammer_active = 0;
@@ -180,7 +180,7 @@ void bouncing() {
     //Bounce up
     if(bounce == BOUNCE_UP) {
         for (int i = 0; i < src->top-1; i++) {
-            src->disk_pos_y[i] = src->disk_pos_y[i] + 0.01*(i+2);
+            src->disk_pos_y[i] = src->disk_pos_y[i] + 0.015*(i+2);
         }
         bounce_counter++;
         if(bounce_counter > 8){
@@ -190,7 +190,7 @@ void bouncing() {
     //Bounce down
     else if(bounce == BOUNCE_DOWN) {
         for (int i = 0; i < src->top-1; i++) {
-            src->disk_pos_y[i] = src->disk_pos_y[i] - 0.01*(i+2);
+            src->disk_pos_y[i] = src->disk_pos_y[i] - 0.015*(i+2);
         }
         bounce_counter--;
         if(bounce_counter == 0){
