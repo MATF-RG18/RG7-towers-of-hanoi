@@ -83,7 +83,8 @@ void init() {
 
     speed = 0.1;
     add_xpos = 0.0;
-    rotation = 0; 
+    rotation = 180;
+    rotation_parameter = 0;
 
     h_alpha = 0; //Rotation angle for the hammer
     hanoi_active = 0; //Solving by algorithm is not active

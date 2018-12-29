@@ -1,8 +1,11 @@
 #include "draw.h"
+#include <math.h>
 
 extern float add_xpos;
 extern float rotation;
 extern float h_alpha;
+extern float distance;
+extern int moving_side;
 extern int hanoi_active;
 
 void draw_background() {
@@ -120,6 +123,8 @@ void draw_disks() {
 			glPushMatrix();
 				if(src == &A && i == A.top - 1) {
 					glTranslatef(A.tower_pos_x + add_xpos, A.disk_pos_y[i], 0);
+					if (moving_side && !hanoi_active)
+						glTranslatef(0, sin(add_xpos*M_PI / distance), 0);
 					glRotatef(rotation, 0, 0, 1);
 				}
 				else
@@ -134,6 +139,8 @@ void draw_disks() {
 			glPushMatrix();
 				if (src == &B && i == B.top - 1) {
 					glTranslatef(B.tower_pos_x + add_xpos, B.disk_pos_y[i], 0);
+					if (moving_side && !hanoi_active)
+						glTranslatef(0, sin(add_xpos*M_PI / distance), 0);
 					glRotatef(rotation, 0, 0, 1);
 				}
 				else
@@ -148,6 +155,8 @@ void draw_disks() {
 			glPushMatrix();
 				if (src == &C && i == C.top - 1) {
 					glTranslatef(C.tower_pos_x + add_xpos, C.disk_pos_y[i], 0);
+					if (moving_side && !hanoi_active)
+						glTranslatef(0, sin(add_xpos*M_PI / distance), 0);
 					glRotatef(rotation, 0, 0, 1);
 				}
 				else

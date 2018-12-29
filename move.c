@@ -1,5 +1,9 @@
 #include "move.h"
 
+#define BOUNCE_OFF 0
+#define BOUNCE_UP 1
+#define BOUNCE_DOWN 2
+
 extern char message[MAX_SIZE];
 
 void initialize_move() {
@@ -11,11 +15,15 @@ void initialize_move() {
     //Activating hammer and bouncing
     move_count++;
     hammer_active = 1;
-    bounce = 1;
+    bounce = BOUNCE_UP;
     bounce_counter = 0;
 
+    distance = dest->tower_pos_x - src->tower_pos_x;
+
     //Calculating increment of disk rotation based on tower distance
-    rotation_parameter = (360 * speed) / (dest->tower_pos_x - src->tower_pos_x);
+    //For closer tower disk rotates semi-circle, for further tower, disk rotates full circle
+    float rotation_range = (abs(distance) < 2.6) ? 180 : 360;
+    rotation_parameter = (rotation_range * speed) / distance;
 
     //Calling timer function
     glutTimerFunc(TIMER_INTERVAL, on_timer, TIMER_ID);
@@ -62,7 +70,7 @@ void perform_move() {
     //moving disk from left to right until it reaches position of the destination tower
     if(moving_side && src->tower_pos_x < dest->tower_pos_x) {
         add_xpos += speed;
-        rotation += rotation_parameter;
+        rotation -= rotation_parameter;
 
         if(src->tower_pos_x + add_xpos >= dest->tower_pos_x) {
             //In case that distance isn't divisible by speed
@@ -111,8 +119,7 @@ void move_complete() {
     moving_up = 1;
     move_done = 0;
     add_xpos = 0.0;
-    rotation = 0;
-    rotation_parameter = 0;
+    rotation = 180;
 
     message[0] = '\0';
 
@@ -145,13 +152,13 @@ void hammer_hit() {
         if(!move_ongoing) {
             h_alpha -= 5;
             if(h_alpha <= -90.0)
-            move_ongoing = 1;
+                move_ongoing = 1;
         }
         else {
             h_alpha += 5;
         }
         if (h_alpha == 0)
-        hammer_active = 0;
+            hammer_active = 0;
     }
 
     //Rotating hammer to right
@@ -159,35 +166,35 @@ void hammer_hit() {
         if(!move_ongoing) {
             h_alpha += 5;
             if(h_alpha >= 90.0)
-            move_ongoing = 1;
+                move_ongoing = 1;
         }
         else {
             h_alpha -= 5;
         }
         if (h_alpha == 0)
-        hammer_active = 0;
+            hammer_active = 0;
     }
 }
 
 void bouncing() {
     //Bounce up
-    if(bounce == 1) {
+    if(bounce == BOUNCE_UP) {
         for (int i = 0; i < src->top-1; i++) {
             src->disk_pos_y[i] = src->disk_pos_y[i] + 0.01*(i+2);
         }
         bounce_counter++;
         if(bounce_counter > 8){
-            bounce = 2;
+            bounce = BOUNCE_DOWN;
         }
     }
     //Bounce down
-    else if(bounce == 2) {
+    else if(bounce == BOUNCE_DOWN) {
         for (int i = 0; i < src->top-1; i++) {
             src->disk_pos_y[i] = src->disk_pos_y[i] - 0.01*(i+2);
         }
         bounce_counter--;
         if(bounce_counter == 0){
-            bounce = 0;
+            bounce = BOUNCE_OFF;
         }
     }
 

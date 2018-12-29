@@ -20,6 +20,7 @@ float speed;		//Positions increment while moving disks
 float add_xpos;		//Increment of x position while moving disk left or right
 float rotation;     //Disk rotation angle and increment
 float rotation_parameter;
+float distance;
 
 float h_alpha;      //Rotation angle for hammer
 int hammer_active;  //Indicator that hammer is moving to hit the platform
