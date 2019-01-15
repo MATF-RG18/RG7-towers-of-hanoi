@@ -1,4 +1,6 @@
 #include "move.h"
+#include <string.h>
+#include <unistd.h>
 
 #define BOUNCE_OFF 0
 #define BOUNCE_UP 1
@@ -7,18 +9,22 @@
 extern char message[MAX_SIZE];
 
 void initialize_move() {
-    sprintf(message, "Moving from %c to %c.\n", src->id, dest->id);
 
-    //Checking if the move is valid
-    if(!is_valid_move()) { return; }
+    //If the move is made by player
+    if(!hanoi_active) {
+        sprintf(message, "Moving from %c to %c.\n", src->id, dest->id);
+
+        //Checking if the move is valid
+        if(!is_valid_move()) { return; }
+        move_count++;
+    }
 
     //Activating hammer and bouncing
-    move_count++;
     hammer_active = 1;
     bounce = BOUNCE_UP;
     bounce_counter = 0;
 
-    distance = dest->tower_pos_x - src->tower_pos_x;
+    distance = dest->tower_pos_x - src->tower_pos_x; //Distance between source and destination towers
 
     //Calculating increment of disk rotation based on tower distance
     //For closer tower disk rotates semi-circle, for further tower, disk rotates full circle
@@ -37,15 +43,22 @@ void on_timer(int value) {
     //Performing selected move
     if (hammer_active)
         hammer_hit();
-    if (move_ongoing || hanoi_active)
+    if (move_ongoing)
         perform_move();
 
     //Sending new picture to the screen
     glutPostRedisplay();
 
     //If the move is still active, timer function is called
-    if (hammer_active || move_ongoing || hanoi_active) {
+    if (hammer_active || move_ongoing) {
         glutTimerFunc(TIMER_INTERVAL, on_timer, TIMER_ID);
+    }
+
+    //If automatic solving is active and current move is done, initialize next move,
+    //that was set up in move_complete function
+    //Code placed here so that no multiple timer callbacks exist
+    if(hanoi_active && !move_ongoing && !hammer_active) {
+        initialize_move();
     }
 }
 
@@ -115,18 +128,25 @@ void perform_move() {
 
 void move_complete() {
 
+    //Updating tower stacks and setting up move variables for next move
     push(dest, pop(src));
+    move_ongoing = 0;
     moving_up = 1;
     move_done = 0;
     add_xpos = 0.0;
     rotation = 180;
-
     message[0] = '\0';
 
-    //If solving by algorithm is active proceed to the next move in the array 'hanoi_moves'
+    //Checking if the player solved the puzzle
+    if(!hanoi_active && is_solved()) {
+        sprintf(message, "Congratulations! You solved the puzzle in %d moves.\n", move_count);
+        return;
+    }
+
+    //If automatic solving is active proceed to the next move in the array 'hanoi_moves'
     if(hanoi_active) {
         if(hanoi_counter == m-1) {
-            //all moves are completed
+            //All moves are completed
             hanoi_active = 0;
             sprintf(message, "Solved in %d moves!", m);
             return;
@@ -134,15 +154,6 @@ void move_complete() {
         hanoi_counter++;
         src = hanoi_moves[hanoi_counter].h_src;
         dest = hanoi_moves[hanoi_counter].h_dest;
-    }
-    //If human player is solving the puzzle, wait for the next move
-    else {
-        move_ongoing = 0;
-
-        if(is_solved()) {
-            sprintf(message, "Congratulations! You solved the puzzle in %d moves.\n", move_count);
-            return;
-        }
     }
 }
 
@@ -204,14 +215,14 @@ int is_valid_move() {
 
     //If the moved disk is bigger than the disk on top
     if(dest->top != 0 && src->size[src->top - 1] > dest->size[dest->top - 1]) {
-        sprintf(message, "Disk must be smaller then the disk on top\n");
+        sprintf(message, "Error: Disk from %c is bigger than top disk on %c\n", src->id, dest->id);
         glutPostRedisplay(); //This is called so that message can be shown
         return 0;
     }
 
     //If we try to move disk from an empty tower
     if(src->top == 0) {
-        sprintf(message, "Source tower is empty.\n");
+        sprintf(message, "Error: Tower %c is empty.\n", src->id);
         glutPostRedisplay();
         return 0;
     }

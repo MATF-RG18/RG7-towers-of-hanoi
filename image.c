@@ -147,8 +147,7 @@ void load_platform_tex() {
     //Initializing Image structure
     Image *image = image_init(0, 0);
 
-    //Creating texture for background
-    //TODO: find larger image
+    //Creating texture for platform
     image_read(image, "Textures/wood.bmp");
 
     //Setting texture parameters
@@ -171,7 +170,7 @@ void load_hammer_tex() {
         //Initializing Image structure
         Image *image = image_init(0, 0);
 
-        //Creating texture for background
+        //Creating texture for hammer head
         image_read(image, "Textures/hammer.bmp");
 
         //Setting texture parameters
@@ -195,7 +194,7 @@ void load_handle_tex() {
         //Initializing Image structure
         Image *image = image_init(0, 0);
 
-        //Creating texture for background
+        //Creating texture for hammer handle
         image_read(image, "Textures/handle.bmp");
 
         //Setting texture parameters

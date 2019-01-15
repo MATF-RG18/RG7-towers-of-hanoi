@@ -19,9 +19,10 @@ void set_light();
 void init();
 void restart();
 void undo_move();
+int animation_active();
 
 void show_message();
-//String that keeps the message we want to show on screen;
+//Message to show on screen;
 char message[MAX_SIZE];
 
 
@@ -46,7 +47,7 @@ int main(int argc, char **argv) {
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_TEXTURE_2D);
 
-    //Resolving number of disks
+    //Resolving disk number
     //If the player enters number of disks
     if(argc > 1) {
         int n = atoi(argv[1]);
@@ -67,27 +68,28 @@ int main(int argc, char **argv) {
     return 0;
 }
 
-//initialization of the variables
+//Initialization of the variables
 void init() {
 
     TOWER_HEIGHT = DISK_NUM * DISK_HEIGHT + 0.75;
     initialize_stack();
 
     //Initializing move variables
+    speed = 0.1;
     move_ongoing = 0; //Initialy, disks are not moving
     moving_up = 1;	//First, we are moving up
     moving_down = 0;
     moving_side = 0;
     move_done = 0;
     move_count = 0;
+    add_xpos = 0; //x position increment while moving disk, initialy 0
 
-    speed = 0.1;
-    add_xpos = 0.0;
+    //Initial values for rotation
     rotation = 180;
     rotation_parameter = 0;
-
     h_alpha = 0; //Rotation angle for the hammer
-    hanoi_active = 0; //Solving by algorithm is not active
+
+    hanoi_active = 0; //Automatic solving is not active
 
     message[0] = '\0';
 
@@ -177,7 +179,6 @@ static void on_keyboard(unsigned char key, int x, int y) {
         // Stopping move
         case 'q':
         case 'Q':
-            //move_ongoing = 0;
             hanoi_active = 0;
             break;
         // Activate puzzle solving by algorithm
@@ -191,7 +192,7 @@ static void on_keyboard(unsigned char key, int x, int y) {
 
         //move from A to B
         case 'a':
-            if (!move_ongoing && !hanoi_active) {
+            if (!animation_active()) {
                 src = &A;
                 dest = &B;
                 initialize_move();
@@ -199,7 +200,7 @@ static void on_keyboard(unsigned char key, int x, int y) {
             break;
         //move from B to A
         case 'A':
-            if (!move_ongoing && !hanoi_active) {
+            if (!animation_active()) {
                 src = &B;
                 dest = &A;
                 initialize_move();
@@ -207,7 +208,7 @@ static void on_keyboard(unsigned char key, int x, int y) {
             break;
         //move from A to C
         case 's':
-            if (!move_ongoing && !hanoi_active) {
+            if (!animation_active()) {
                 src = &A;
                 dest = &C;
                 initialize_move();
@@ -215,7 +216,7 @@ static void on_keyboard(unsigned char key, int x, int y) {
             break;
         //move from C to A
         case 'S':
-            if (!move_ongoing && !hanoi_active) {
+            if (!animation_active()) {
                 src = &C;
                 dest = &A;
                 initialize_move();
@@ -223,7 +224,7 @@ static void on_keyboard(unsigned char key, int x, int y) {
             break;
         //move from B to C
         case 'd':
-            if (!move_ongoing && !hanoi_active) {
+            if (!animation_active()) {
                 src = &B;
                 dest = &C;
                 initialize_move();
@@ -231,7 +232,7 @@ static void on_keyboard(unsigned char key, int x, int y) {
             break;
         //move from C to B
         case 'D':
-            if (!move_ongoing && !hanoi_active) {
+            if (!animation_active()) {
                 src = &C;
                 dest = &B;
                 initialize_move();
@@ -239,7 +240,7 @@ static void on_keyboard(unsigned char key, int x, int y) {
             break;
         case 'u':
         case 'U':
-            if (!move_ongoing) {
+            if (!animation_active()) {
                 undo_move();
             }
             break;
@@ -287,4 +288,9 @@ void undo_move() {
     dest = src;
     src = tmp;
     initialize_move();
+}
+
+//Checking if any animation is active
+int animation_active() {
+    return hanoi_active || move_ongoing || hammer_active;
 }
