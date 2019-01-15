@@ -91,10 +91,11 @@ void init() {
 
     message[0] = '\0';
 
-    set_light();
     //Loading textures
     load_background();
     load_platform_tex();
+    load_hammer_tex();
+    load_handle_tex();
 }
 
 void restart() {
@@ -116,6 +117,7 @@ static void on_display(void) {
         0, 1, 0
     );
 
+    set_light();
     draw_background(); //Drawing background
     draw_towers(); //Drawing towers
     draw_disks(); //Drawing disks
@@ -130,23 +132,29 @@ static void on_display(void) {
 
 void set_light(){
 
-    //TODO: fix light
     //Light position
-    GLfloat light_position[] = { 10, 10, 15, 0 };
+    GLfloat light_position_0[] = { 20, 20, 20, 0 };
+    GLfloat light_position_1[] = {-20, 20, 20, 0};
     //Ambient light
     GLfloat ambient_light[] = { 0.1, 0.1, 0.1, 1 };
     //Diffuse light
-    GLfloat diffuse_light[] = { 1, 1, 1, 1 };
+    GLfloat diffuse_light[] = { 0.5, 0.5, 0.5, 1 };
     //Specular light
-    GLfloat specular_light[] = {0.4, 0.4, 0.4, 1 };
+    GLfloat specular_light[] = {0.2, 0.2, 0.2, 1 };
 
     //Setting light
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
-    glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+    glLightfv(GL_LIGHT0, GL_POSITION, light_position_0);
     glLightfv(GL_LIGHT0, GL_AMBIENT, ambient_light);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse_light);
     glLightfv(GL_LIGHT0, GL_SPECULAR, specular_light);
+
+    glEnable(GL_LIGHT1);
+    glLightfv(GL_LIGHT1, GL_POSITION, light_position_1);
+    glLightfv(GL_LIGHT1, GL_AMBIENT, ambient_light);
+    glLightfv(GL_LIGHT1, GL_DIFFUSE, diffuse_light);
+    glLightfv(GL_LIGHT1, GL_SPECULAR, specular_light);
 
 }
 
@@ -154,8 +162,10 @@ static void on_keyboard(unsigned char key, int x, int y) {
 
     switch (key) {
         case 27: //ESC
-            glDeleteTextures(1, &bg_tex_name);
+            glDeleteTextures(1, &bg_tex);
             glDeleteTextures(1, &platform_tex);
+            glDeleteTextures(1, &handle_tex);
+            glDeleteTextures(1, &hammer_tex);
             exit(0);
             break;
         //restart
@@ -249,7 +259,7 @@ static void on_reshape(int w, int h) {
 void show_message() {
     char *c;
 
-    glColor3f(1, 1, 1);
+    set_material('b');
     glPushMatrix();
         glTranslatef(-2, -2, 5);
         glRasterPos3f(0, 4.9, 0.5);

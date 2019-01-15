@@ -3,6 +3,7 @@
 
 #include "stack.h"
 #include "image.h"
+#include "move.h"
 #include <GL/glut.h>
 
 //Drawing background

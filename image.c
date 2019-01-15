@@ -30,7 +30,6 @@ Image *image_init(int width, int height) {
 
 void image_done(Image *image) {
 
-
     //Free space containing pixels data
     free(image->pixels);
     //Free space of the Image structure
@@ -121,8 +120,6 @@ void image_read(Image *image, char *filename) {
 
 void load_background() {
 
-    //glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-
     //Initializing Image structure
     Image *image = image_init(0, 0);
 
@@ -130,9 +127,9 @@ void load_background() {
     image_read(image, "Textures/bg.bmp");
 
     //Setting texture parameters
-    glGenTextures(1, &bg_tex_name);
+    glGenTextures(1, &bg_tex);
 
-    glBindTexture(GL_TEXTURE_2D, bg_tex_name); //Binding texture to a pointer
+    glBindTexture(GL_TEXTURE_2D, bg_tex); //Binding texture to a pointer
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -146,8 +143,6 @@ void load_background() {
 }
 
 void load_platform_tex() {
-
-    //glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
     //Initializing Image structure
     Image *image = image_init(0, 0);
@@ -170,4 +165,52 @@ void load_platform_tex() {
     glBindTexture(GL_TEXTURE_2D, 0); //unbinding
 
     image_done(image);
+}
+
+void load_hammer_tex() {
+        //Initializing Image structure
+        Image *image = image_init(0, 0);
+
+        //Creating texture for background
+        image_read(image, "Textures/hammer.bmp");
+
+        //Setting texture parameters
+        glGenTextures(1, &hammer_tex);
+
+        glBindTexture(GL_TEXTURE_2D, hammer_tex); //Binding texture to a pointer
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB,
+                     image->width, image->height, 0,
+                     GL_RGB, GL_UNSIGNED_BYTE, image->pixels);
+        glBindTexture(GL_TEXTURE_2D, 0); //unbinding
+
+        image_done(image);
+
+}
+
+void load_handle_tex() {
+        //Initializing Image structure
+        Image *image = image_init(0, 0);
+
+        //Creating texture for background
+        image_read(image, "Textures/handle.bmp");
+
+        //Setting texture parameters
+        glGenTextures(1, &handle_tex);
+
+        glBindTexture(GL_TEXTURE_2D, handle_tex); //Binding texture to a pointer
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB,
+                     image->width, image->height, 0,
+                     GL_RGB, GL_UNSIGNED_BYTE, image->pixels);
+        glBindTexture(GL_TEXTURE_2D, 0); //unbinding
+
+        image_done(image);
+
 }

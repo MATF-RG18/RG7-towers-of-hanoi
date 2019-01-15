@@ -9,8 +9,10 @@
 #include <stdio.h>
 #include <GL/glut.h>
 
-GLuint bg_tex_name;
+GLuint bg_tex;
 GLuint platform_tex;
+GLuint handle_tex;
+GLuint hammer_tex;
 
 //Structures that represent bitmap headers
 typedef struct {
@@ -56,4 +58,7 @@ void load_background();
 //Load platform texture
 void load_platform_tex();
 
+void load_hammer_tex();
+
+void load_handle_tex();
 #endif

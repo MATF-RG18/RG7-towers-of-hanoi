@@ -1,17 +1,10 @@
 #include "draw.h"
 #include <math.h>
 
-extern float add_xpos;
-extern float rotation;
-extern float h_alpha;
-extern float distance;
-extern int moving_side;
-extern int hanoi_active;
-
 void draw_background() {
     //Background is not affected by lighting
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-    glBindTexture(GL_TEXTURE_2D, bg_tex_name);
+    glBindTexture(GL_TEXTURE_2D, bg_tex);
 
     glPushMatrix();
     //Rotating background image in front of camera
@@ -34,7 +27,7 @@ void draw_towers() {
     //Towers are affected by lighting
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
     glBindTexture(GL_TEXTURE_2D, platform_tex);
-    set_material('t');
+    set_material('w');
 
 	//Drawing plarform for towers
 	glPushMatrix();
@@ -115,7 +108,7 @@ void draw_towers() {
 
 void draw_disks() {
 
-    set_material('d');
+    set_material('b');
 
 	glPushMatrix();
 		//Disks on the first tower
@@ -174,27 +167,35 @@ void draw_hammer() {
 	glPushMatrix();
 
 	glTranslatef(0, -1.7, 0); //platform height(1) + hammer width / 2 (0.7)
-	if(src == &B && !hanoi_active) {
+	if(src == &B && !hanoi_active && is_valid_move()) {
 		glTranslatef(TOWER_DISTANCE, 0, 0);
 	}
 	glRotatef(h_alpha, 0, 0, 1);
 
 	//Drawing hammer head
+	glBindTexture(GL_TEXTURE_2D, hammer_tex);
+	GLUquadricObj *obj = gluNewQuadric();
+	gluQuadricTexture(obj, hammer_tex);
+	set_material('w');
+
 	glPushMatrix();
 		glTranslatef(0.7, -TOWER_DISTANCE, 0);
-		//glScalef(1.4, 0.6, 0.6);
 		glRotatef(-90, 0, 1, 0);
-		//glutSolidCube(1);
-		gluCylinder(gluNewQuadric(), 0.5, 0.5, 1.4, 20, 20);
+		gluCylinder(obj, 0.5, 0.5, 1.4, 20, 20);
 	glPopMatrix();
+	glBindTexture(GL_TEXTURE_2D, 0);
 
 	//Drawing hammer handle
+	glBindTexture(GL_TEXTURE_2D, handle_tex);
+	//GLUquadricObj *obj = gluNewQuadric();
+    gluQuadricTexture(obj, handle_tex);
+
 	glPushMatrix();
 		glTranslatef(0, -TOWER_DISTANCE, 0);
 		glRotatef(-90, 1, 0, 0);
-		gluCylinder(gluNewQuadric(), 0.1, 0.1, 2.5, 20, 20);
+		gluCylinder(obj, 0.1, 0.1, 2.5, 20, 20);
 	glPopMatrix();
-
+	glBindTexture(GL_TEXTURE_2D, 0);
 	glPopMatrix();
 }
 
@@ -208,12 +209,12 @@ void set_material(char id) {
     GLfloat shininess = 5;
 
     switch (id) {
-        case 't':
+        case 'w':
             diffuse_coeffs[0] = 1;
             diffuse_coeffs[1] = 1;
             diffuse_coeffs[2] = 1;
             break;
-        case 'd':
+        case 'b':
             diffuse_coeffs[0] = 0.2;
             diffuse_coeffs[1] = 0.8;
             diffuse_coeffs[2] = 0.8;
